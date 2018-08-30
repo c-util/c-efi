@@ -24,3 +24,6 @@ endif
 
 test_api = executable('test-api', ['test-api.c'], native: true, dependencies: libcefi_dep)
 test('API Symbol Visibility', test_api)
+
+test_basic = executable('test-basic', ['test-basic.c'], native: true, dependencies: libcefi_dep)
+test('Basic Functionality', test_basic)
