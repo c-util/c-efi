@@ -22,5 +22,5 @@ endif
 # target: test-*
 #
 
-test_api = executable('test-api', ['test-api.c'], dependencies: libcefi_dep)
+test_api = executable('test-api', ['test-api.c'], native: true, dependencies: libcefi_dep)
 test('API Symbol Visibility', test_api)
