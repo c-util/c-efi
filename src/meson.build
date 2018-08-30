@@ -27,3 +27,6 @@ test('API Symbol Visibility', test_api)
 
 test_basic = executable('test-basic', ['test-basic.c'], native: true, dependencies: libcefi_dep)
 test('Basic Functionality', test_basic)
+
+test_native = executable('test-native', ['test-native.c'], dependencies: libcefi_dep)
+test('Basic Native UEFI Tests', test_native)
