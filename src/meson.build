@@ -8,7 +8,17 @@ libcefi_dep = declare_dependency(
 )
 
 if not meson.is_subproject()
-        install_headers('c-efi.h')
+        install_headers(
+                'c-efi.h',
+                'c-efi-base.h',
+                'c-efi-system.h',
+                'c-efi-protocol-device-path.h',
+                'c-efi-protocol-device-path-from-text.h',
+                'c-efi-protocol-device-path-to-text.h',
+                'c-efi-protocol-device-path-utility.h',
+                'c-efi-protocol-loaded-image.h',
+                'c-efi-protocol-loaded-image-device-path.h',
+        )
 
         mod_pkgconfig.generate(
                 version: meson.project_version(),
