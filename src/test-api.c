@@ -5,13 +5,12 @@
  */
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "c-efi.h"
 
 static void test_api(void) {
-        assert(C_EFI_NULL == 0);
+        assert(!C_EFI_NULL);
+        assert(C_EFI_JOIN(1, 1) == 11);
 }
 
 int main(int argc, char **argv) {
