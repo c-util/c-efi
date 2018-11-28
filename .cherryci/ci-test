@@ -6,7 +6,9 @@ rm -Rf "./ci-build"
 mkdir "./ci-build"
 cd "./ci-build"
 
-${CHERRY_LIB_MESONSETUP} . "${CHERRY_LIB_SRCDIR}"
+${CHERRY_LIB_MESONSETUP} \
+        --cross-file "${CHERRY_LIB_SRCDIR}/src/x86_64-unknown-uefi.mesoncross.ini" \
+        . \
+        "${CHERRY_LIB_SRCDIR}"
 ${CHERRY_LIB_NINJABUILD}
 ${CHERRY_LIB_MESONTEST}
-(( ! CHERRY_LIB_VALGRIND )) || ${CHERRY_LIB_MESONTEST} "--wrapper=${CHERRY_LIB_VALGRINDWRAP}"

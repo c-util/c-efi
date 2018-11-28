@@ -1,4 +1,20 @@
 #
+# Install meson cross-files
+#
+
+if use_mesoncross
+        install_data(
+                [
+                        'x86_64-unknown-uefi.mesoncross.ini'
+                ],
+                rename: [
+                        'x86_64-unknown-uefi'
+                ],
+                install_dir: mesoncrossdir,
+        )
+endif
+
+#
 # target: libcefi.dep
 #
 

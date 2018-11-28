@@ -46,7 +46,9 @@ INSTALL:
 
             $ mkdir build
             $ cd build
-            $ meson setup ..
+            $ meson setup \
+                  --cross-file ../src/x86_64-unknown-uefi.mesoncross.ini \
+                  ..
             $ ninja
             $ meson test
             # ninja install

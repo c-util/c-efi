@@ -1,0 +1,2 @@
+option('mesoncross', type: 'boolean', value: false, description: 'Install Meson cross-files')
+option('mesoncrossdir', type: 'string', value: '', description: 'Meson cross-file directory')
