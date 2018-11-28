@@ -76,6 +76,21 @@ static void test_basic(void) {
                 assert(sizeof(id.u32) == 16);
                 assert(sizeof(id.u64) == 16);
         }
+
+        /*
+         * Verify alignments and size of networking types.
+         */
+        {
+                assert(_Alignof(CEfiMacAddress) == 1);
+                assert(_Alignof(CEfiIpv4Address) == 1);
+                assert(_Alignof(CEfiIpv6Address) == 1);
+                assert(_Alignof(CEfiIpAddress) == 4);
+
+                assert(sizeof(CEfiMacAddress) == 32);
+                assert(sizeof(CEfiIpv4Address) == 4);
+                assert(sizeof(CEfiIpv6Address) == 16);
+                assert(sizeof(CEfiIpAddress) == 16);
+        }
 }
 
 int main(int argc, char **argv) {
