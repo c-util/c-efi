@@ -15,6 +15,6 @@ static int test_native(void) {
         return 0;
 }
 
-int efi_main(void) {
+CEfiStatus efi_main(CEfiHandle h, CEfiSystemTable *st) {
         return test_native();
 }
