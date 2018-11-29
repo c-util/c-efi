@@ -311,7 +311,7 @@ typedef CEfiU64 CEfiVirtualAddress;
  * applications are unloaded when this function returns. Drivers might stay in
  * memory, depending on the return type. See the specification for details.
  */
-typedef CEfiStatus (*CEfiImageEntryPoint)(CEfiHandle *image, CEfiSystemTable *st);
+typedef CEfiStatus (*CEfiImageEntryPoint)(CEfiHandle image, CEfiSystemTable *st);
 
 #ifdef __cplusplus
 }
