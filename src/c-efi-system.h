@@ -329,8 +329,6 @@ typedef struct CEfiConfigurationTable {
         void *vendor_table;
 } CEfiConfigurationTable;
 
-/* properties table (DEPRECATED in the spec) */
-
 #define C_EFI_PROPERTIES_TABLE_GUID C_EFI_GUID(0x880aaca3, 0x4adc, 0x4a04, 0x90, 0x79, 0xb7, 0x47, 0x34, 0x8, 0x25, 0xe5)
 #define C_EFI_PROPERTIES_TABLE_VERSION C_EFI_U32_C(0x00010000)
 
@@ -341,8 +339,6 @@ typedef struct CEfiPropertiesTable {
         CEfiU32 length;
         CEfiU64 memory_protection_attribute;
 } CEfiPropertiesTable;
-
-/* memory attributes table */
 
 #define C_EFI_MEMORY_ATTRIBUTES_TABLE_GUID C_EFI_GUID(0xdcfa911d, 0x26eb, 0x469f, 0xa2, 0x20, 0x38, 0xb7, 0xdc, 0x46, 0x12, 0x20)
 #define C_EFI_MEMORY_ATTRIBUTES_TABLE_VERSION C_EFI_U32_C(0x00000001)
