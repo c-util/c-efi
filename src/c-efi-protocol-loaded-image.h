@@ -34,7 +34,9 @@ typedef struct CEfiLoadedImageProtocol {
         CEfiMemoryType image_code_type;
         CEfiMemoryType image_data_type;
 
-        CEfiStatus (*unload) (CEfiHandle image_handle);
+        CEfiStatus (CEFICALL *unload) (
+                CEfiHandle image_handle
+        );
 } CEfiLoadedImageProtocol;
 
 #ifdef __cplusplus

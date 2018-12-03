@@ -47,22 +47,32 @@ typedef struct CEfiKeyData {
         CEfiKeyState key_state;
 } CEfiKeyData;
 
-typedef CEfiStatus (*CEfiKeyNotifyFunction) (CEfiKeyData *key_data);
+typedef CEfiStatus (CEFICALL *CEfiKeyNotifyFunction) (CEfiKeyData *key_data);
 
 typedef struct CEfiSimpleTextInputExProtocol {
-        CEfiStatus (*reset) (CEfiSimpleTextInputExProtocol *this_,
-                             CEfiBool extended_verification);
-        CEfiStatus (*read_key_stroke_ex) (CEfiSimpleTextInputExProtocol *this_,
-                                          CEfiKeyData *key_data);
+        CEfiStatus (CEFICALL *reset) (
+                CEfiSimpleTextInputExProtocol *this_,
+                CEfiBool extended_verification
+        );
+        CEfiStatus (CEFICALL *read_key_stroke_ex) (
+                CEfiSimpleTextInputExProtocol *this_,
+                CEfiKeyData *key_data
+        );
         CEfiEvent wait_for_key_ex;
-        CEfiStatus (*set_state) (CEfiSimpleTextInputExProtocol *this_,
-                                CEfiKeyToggleState *key_toggle_state);
-        CEfiStatus (*register_key_notify) (CEfiSimpleTextInputExProtocol *this_,
-                                           CEfiKeyData *key_data,
-                                           CEfiKeyNotifyFunction key_notification_function,
-                                           void **notify_handle);
-        CEfiStatus (*unregister_key_notify) (CEfiSimpleTextInputExProtocol *this_,
-                                             void *notification_handle);
+        CEfiStatus (CEFICALL *set_state) (
+                CEfiSimpleTextInputExProtocol *this_,
+                CEfiKeyToggleState *key_toggle_state
+        );
+        CEfiStatus (CEFICALL *register_key_notify) (
+                CEfiSimpleTextInputExProtocol *this_,
+                CEfiKeyData *key_data,
+                CEfiKeyNotifyFunction key_notification_function,
+                void **notify_handle
+        );
+        CEfiStatus (CEFICALL *unregister_key_notify) (
+                CEfiSimpleTextInputExProtocol *this_,
+                void *notification_handle
+        );
 } CEfiSimpleTextInputExProtocol;
 
 #ifdef __cplusplus

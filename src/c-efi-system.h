@@ -205,7 +205,7 @@ typedef struct CEfiCapsuleResultVariableFMP {
 #define C_EFI_EVT_SIGNAL_EXIT_BOOT_SERVICES             C_EFI_U32_C(0x00000201)
 #define C_EFI_EVT_SIGNAL_VIRTUAL_ADDRESS_CHANGE         C_EFI_U32_C(0x60000202)
 
-typedef void (*CEfiEventNotify) (CEfiEvent event, void *context);
+typedef void (CEFICALL *CEfiEventNotify) (CEfiEvent event, void *context);
 
 #define C_EFI_EVENT_GROUP_EXIT_BOOT_SERVICES            C_EFI_GUID(0x27abf055, 0xb1b8, 0x4c26, 0x80, 0x48, 0x74, 0x8f, 0x37, 0xba, 0xa2, 0xdf)
 #define C_EFI_EVENT_GROUP_VIRTUAL_ADDRESS_CHANGE        C_EFI_GUID(0x13fa7698, 0xc831, 0x49c7, 0x87, 0xea, 0x8f, 0x43, 0xfc, 0xc2, 0x51, 0x96)
@@ -390,54 +390,83 @@ typedef struct CEfiTableHeader {
 typedef struct CEfiRuntimeServices {
         CEfiTableHeader hdr;
 
-        CEfiStatus (*get_time) (CEfiTime *time,
-                                CEfiTimeCapabilities *capabilities);
-        CEfiStatus (*set_time) (CEfiTime *time);
-        CEfiStatus (*get_wakeup_time) (CEfiBool *enabled,
-                                       CEfiBool *pending,
-                                       CEfiTime *time);
-        CEfiStatus (*set_wakeup_time) (CEfiBool enable,
-                                       CEfiTime *time);
+        CEfiStatus (CEFICALL *get_time) (
+                CEfiTime *time,
+                CEfiTimeCapabilities *capabilities
 
-        CEfiStatus (*set_virtual_address_map) (CEfiUSize memory_map_size,
-                                               CEfiUSize descriptor_size,
-                                               CEfiU32 descriptor_version,
-                                               CEfiMemoryDescriptor *virtual_map);
-        CEfiStatus (*convert_pointer) (CEfiUSize debug_disposition,
-                                       void **address);
+        );
+        CEfiStatus (CEFICALL *set_time) (
+                CEfiTime *time
+        );
+        CEfiStatus (CEFICALL *get_wakeup_time) (
+                CEfiBool *enabled,
+                CEfiBool *pending,
+                CEfiTime *time
+        );
+        CEfiStatus (CEFICALL *set_wakeup_time) (
+                CEfiBool enable,
+                CEfiTime *time
+        );
 
-        CEfiStatus (*get_variable) (CEfiChar16 *variable_name,
-                                    CEfiGuid *vendor_guid,
-                                    CEfiU32 *attributes,
-                                    CEfiUSize *data_size,
-                                    void *data);
-        CEfiStatus (*get_next_variable_name) (CEfiUSize *variable_name_size,
-                                              CEfiChar16 *variable_name,
-                                              CEfiGuid *vendor_guid);
-        CEfiStatus (*set_variable) (CEfiChar16 *variable_name,
-                                    CEfiGuid *vendor_guid,
-                                    CEfiU32 attributes,
-                                    CEfiUSize data_size,
-                                    void *data);
+        CEfiStatus (CEFICALL *set_virtual_address_map) (
+                CEfiUSize memory_map_size,
+                CEfiUSize descriptor_size,
+                CEfiU32 descriptor_version,
+                CEfiMemoryDescriptor *virtual_map
+        );
+        CEfiStatus (CEFICALL *convert_pointer) (
+                CEfiUSize debug_disposition,
+                void **address
+        );
 
-        CEfiStatus (*get_next_high_mono_count) (CEfiU32 *high_count);
-        void (*reset_system) (CEfiResetType reset_type,
-                              CEfiStatus reset_status,
-                              CEfiUSize data_size,
-                              void *reset_data);
+        CEfiStatus (CEFICALL *get_variable) (
+                CEfiChar16 *variable_name,
+                CEfiGuid *vendor_guid,
+                CEfiU32 *attributes,
+                CEfiUSize *data_size,
+                void *data
+        );
+        CEfiStatus (CEFICALL *get_next_variable_name) (
+                CEfiUSize *variable_name_size,
+                CEfiChar16 *variable_name,
+                CEfiGuid *vendor_guid
+        );
+        CEfiStatus (CEFICALL *set_variable) (
+                CEfiChar16 *variable_name,
+                CEfiGuid *vendor_guid,
+                CEfiU32 attributes,
+                CEfiUSize data_size,
+                void *data
+        );
 
-        CEfiStatus (*update_capsule) (CEfiCapsuleHeader **capsule_header_array,
-                                      CEfiUSize capsule_count,
-                                      CEfiPhysicalAddress scatter_gather_list);
-        CEfiStatus (*query_capsule_capabilities) (CEfiCapsuleHeader **capsule_header_array,
-                                                  CEfiUSize capsule_count,
-                                                  CEfiU64 *maximum_capsule_size,
-                                                  CEfiResetType *reset_type);
+        CEfiStatus (CEFICALL *get_next_high_mono_count) (
+                CEfiU32 *high_count
+        );
+        void (CEFICALL *reset_system) (
+                CEfiResetType reset_type,
+                CEfiStatus reset_status,
+                CEfiUSize data_size,
+                void *reset_data
+        );
 
-        CEfiStatus (*query_variable_info) (CEfiU32 attributes,
-                                           CEfiU64 *maximum_variable_storage_size,
-                                           CEfiU64 *remaining_variable_storage_size,
-                                           CEfiU64 *maximum_variable_size);
+        CEfiStatus (CEFICALL *update_capsule) (
+                CEfiCapsuleHeader **capsule_header_array,
+                CEfiUSize capsule_count,
+                CEfiPhysicalAddress scatter_gather_list
+        );
+        CEfiStatus (CEFICALL *query_capsule_capabilities) (
+                CEfiCapsuleHeader **capsule_header_array,
+                CEfiUSize capsule_count,
+                CEfiU64 *maximum_capsule_size,
+                CEfiResetType *reset_type
+        );
+
+        CEfiStatus (CEFICALL *query_variable_info) (
+                CEfiU32 attributes,
+                CEfiU64 *maximum_variable_storage_size,
+                CEfiU64 *remaining_variable_storage_size,
+                CEfiU64 *maximum_variable_size
+        );
 } CEfiRuntimeServices;
 
 #define C_EFI_BOOT_SERVICES_SIGNATURE C_EFI_U64_C(0x56524553544f4f42) /* "BOOTSERV" */
@@ -445,154 +474,240 @@ typedef struct CEfiRuntimeServices {
 typedef struct CEfiBootServices {
         CEfiTableHeader hdr;
 
-        CEfiTpl (*raise_tpl) (CEfiTpl new_tpl);
-        void (*restore_tpl) (CEfiTpl old_tpl);
+        CEfiTpl (CEFICALL *raise_tpl) (
+                CEfiTpl new_tpl
+        );
+        void (CEFICALL *restore_tpl) (
+                CEfiTpl old_tpl
+        );
 
-        CEfiStatus (*allocate_pages) (CEfiAllocateType type,
-                                      CEfiMemoryType memory_type,
-                                      CEfiUSize pages,
-                                      CEfiPhysicalAddress *memory);
-        CEfiStatus (*free_pages) (CEfiPhysicalAddress memory,
-                                  CEfiUSize pages);
-        CEfiStatus (*get_memory_map) (CEfiUSize *memory_map_size,
-                                      CEfiMemoryDescriptor *memory_map,
-                                      CEfiUSize *map_key,
-                                      CEfiUSize *descriptor_size,
-                                      CEfiU32 *descriptor_version);
-        CEfiStatus (*allocate_pool) (CEfiMemoryType pool_type,
-                                     CEfiUSize size,
-                                     void **buffer);
-        CEfiStatus (*free_pool) (void *buffer);
+        CEfiStatus (CEFICALL *allocate_pages) (
+                CEfiAllocateType type,
+                CEfiMemoryType memory_type,
+                CEfiUSize pages,
+                CEfiPhysicalAddress *memory
+        );
+        CEfiStatus (CEFICALL *free_pages) (
+                CEfiPhysicalAddress memory,
+                CEfiUSize pages
+        );
+        CEfiStatus (CEFICALL *get_memory_map) (
+                CEfiUSize *memory_map_size,
+                CEfiMemoryDescriptor *memory_map,
+                CEfiUSize *map_key,
+                CEfiUSize *descriptor_size,
+                CEfiU32 *descriptor_version
+        );
+        CEfiStatus (CEFICALL *allocate_pool) (
+                CEfiMemoryType pool_type,
+                CEfiUSize size,
+                void **buffer
+        );
+        CEfiStatus (CEFICALL *free_pool) (
+                void *buffer
+        );
 
-        CEfiStatus (*create_event) (CEfiU32 type,
-                                    CEfiTpl notify_tpl,
-                                    CEfiEventNotify notify_function,
-                                    void *notify_context,
-                                    CEfiEvent *event);
-        CEfiStatus (*set_timer) (CEfiEvent event,
-                                 CEfiTimerDelay type,
-                                 CEfiU64 trigger_time);
-        CEfiStatus (*wait_for_event) (CEfiUSize number_of_events,
-                                      CEfiEvent *event,
-                                      CEfiUSize *index);
-        CEfiStatus (*signal_event) (CEfiEvent event);
-        CEfiStatus (*close_event) (CEfiEvent event);
-        CEfiStatus (*check_event) (CEfiEvent event);
+        CEfiStatus (CEFICALL *create_event) (
+                CEfiU32 type,
+                CEfiTpl notify_tpl,
+                CEfiEventNotify notify_function,
+                void *notify_context,
+                CEfiEvent *event
+        );
+        CEfiStatus (CEFICALL *set_timer) (
+                CEfiEvent event,
+                CEfiTimerDelay type,
+                CEfiU64 trigger_time
+        );
+        CEfiStatus (CEFICALL *wait_for_event) (
+                CEfiUSize number_of_events,
+                CEfiEvent *event,
+                CEfiUSize *index
+        );
+        CEfiStatus (CEFICALL *signal_event) (
+                CEfiEvent event
+        );
+        CEfiStatus (CEFICALL *close_event) (
+                CEfiEvent event
+        );
+        CEfiStatus (CEFICALL *check_event) (
+                CEfiEvent event
+        );
 
-        CEfiStatus (*install_protocol_interface) (CEfiHandle *handle,
-                                                  CEfiGuid *protocol,
-                                                  CEfiInterfaceType interface_type,
-                                                  void *interface);
-        CEfiStatus (*reinstall_protocol_interface) (CEfiHandle handle,
-                                                    CEfiGuid *protocol,
-                                                    void *old_interface,
-                                                    void *new_interface);
-        CEfiStatus (*uninstall_protocol_interface) (CEfiHandle handle,
-                                                    CEfiGuid *protocol,
-                                                    void *interface);
-        CEfiStatus (*handle_protocol) (CEfiHandle handle,
-                                       CEfiGuid *protocol,
-                                       void **interface);
+        CEfiStatus (CEFICALL *install_protocol_interface) (
+                CEfiHandle *handle,
+                CEfiGuid *protocol,
+                CEfiInterfaceType interface_type,
+                void *interface
+        );
+        CEfiStatus (CEFICALL *reinstall_protocol_interface) (
+                CEfiHandle handle,
+                CEfiGuid *protocol,
+                void *old_interface,
+                void *new_interface
+        );
+        CEfiStatus (CEFICALL *uninstall_protocol_interface) (
+                CEfiHandle handle,
+                CEfiGuid *protocol,
+                void *interface
+        );
+        CEfiStatus (CEFICALL *handle_protocol) (
+                CEfiHandle handle,
+                CEfiGuid *protocol,
+                void **interface
+        );
         void *reserved;
-        CEfiStatus (*register_protocol_notify) (CEfiGuid *protocol,
-                                                CEfiEvent event,
-                                                void **registration);
-        CEfiStatus (*locate_handle) (CEfiLocateSearchType search_type,
-                                     CEfiGuid *protocol,
-                                     void *search_key,
-                                     CEfiUSize *buffer_size,
-                                     CEfiHandle *buffer);
-        CEfiStatus (*locate_device_path) (CEfiGuid *protocol,
-                                          CEfiDevicePathProtocol **device_path,
-                                          CEfiHandle *device);
+        CEfiStatus (CEFICALL *register_protocol_notify) (
+                CEfiGuid *protocol,
+                CEfiEvent event,
+                void **registration
+        );
+        CEfiStatus (CEFICALL *locate_handle) (
+                CEfiLocateSearchType search_type,
+                CEfiGuid *protocol,
+                void *search_key,
+                CEfiUSize *buffer_size,
+                CEfiHandle *buffer
+        );
+        CEfiStatus (CEFICALL *locate_device_path) (
+                CEfiGuid *protocol,
+                CEfiDevicePathProtocol **device_path,
+                CEfiHandle *device
+        );
 
-        CEfiStatus (*install_configuration_table) (CEfiGuid *guid,
-                                                   void *table);
+        CEfiStatus (CEFICALL *install_configuration_table) (
+                CEfiGuid *guid,
+                void *table
+        );
 
-        CEfiStatus (*load_image) (CEfiBool boot_policy,
-                                  CEfiHandle parent_image_handle,
-                                  CEfiDevicePathProtocol *device_path,
-                                  void *source_buffer,
-                                  CEfiUSize source_size,
-                                  CEfiHandle *image_handle);
-        CEfiStatus (*start_image) (CEfiHandle image_handle,
-                                   CEfiUSize *exit_data_size,
-                                   CEfiChar16 **exit_data);
-        CEfiStatus (*exit) (CEfiHandle image_handle,
-                            CEfiStatus exit_status,
-                            CEfiUSize exit_data_size,
-                            CEfiChar16 *exit_data);
-        CEfiStatus (*unload_image) (CEfiHandle image_handle);
-        CEfiStatus (*exit_boot_services) (CEfiHandle image_handle,
-                                          CEfiUSize map_key);
+        CEfiStatus (CEFICALL *load_image) (
+                CEfiBool boot_policy,
+                CEfiHandle parent_image_handle,
+                CEfiDevicePathProtocol *device_path,
+                void *source_buffer,
+                CEfiUSize source_size,
+                CEfiHandle *image_handle
+        );
+        CEfiStatus (CEFICALL *start_image) (
+                CEfiHandle image_handle,
+                CEfiUSize *exit_data_size,
+                CEfiChar16 **exit_data
+        );
+        CEfiStatus (CEFICALL *exit) (
+                CEfiHandle image_handle,
+                CEfiStatus exit_status,
+                CEfiUSize exit_data_size,
+                CEfiChar16 *exit_data
+        );
+        CEfiStatus (CEFICALL *unload_image) (
+                CEfiHandle image_handle
+        );
+        CEfiStatus (CEFICALL *exit_boot_services) (
+                CEfiHandle image_handle,
+                CEfiUSize map_key
+        );
 
-        CEfiStatus (*get_next_monotonic_count) (CEfiU64 *count);
-        CEfiStatus (*stall) (CEfiUSize microseconds);
-        CEfiStatus (*set_watchdog_timer) (CEfiUSize timeout,
-                                          CEfiU64 watchdog_code,
-                                          CEfiUSize data_size,
-                                          CEfiChar16 *watchdog_data);
+        CEfiStatus (CEFICALL *get_next_monotonic_count) (
+                CEfiU64 *count
+        );
+        CEfiStatus (CEFICALL *stall) (
+                CEfiUSize microseconds
+        );
+        CEfiStatus (CEFICALL *set_watchdog_timer) (
+                CEfiUSize timeout,
+                CEfiU64 watchdog_code,
+                CEfiUSize data_size,
+                CEfiChar16 *watchdog_data
+        );
 
         /* 1.1+ */
 
-        CEfiStatus (*connect_controller) (CEfiHandle controller_handle,
-                                          CEfiHandle *driver_image_handle,
-                                          CEfiDevicePathProtocol *remaining_device_path,
-                                          CEfiBool recursive);
-        CEfiStatus (*disconnect_controller) (CEfiHandle controller_handle,
-                                             CEfiHandle driver_image_handle,
-                                             CEfiHandle child_handle);
+        CEfiStatus (CEFICALL *connect_controller) (
+                CEfiHandle controller_handle,
+                CEfiHandle *driver_image_handle,
+                CEfiDevicePathProtocol *remaining_device_path,
+                CEfiBool recursive
+        );
+        CEfiStatus (CEFICALL *disconnect_controller) (
+                CEfiHandle controller_handle,
+                CEfiHandle driver_image_handle,
+                CEfiHandle child_handle
+        );
 
-        CEfiStatus (*open_protocol) (CEfiHandle handle,
-                                     CEfiGuid *protocol,
-                                     void **interface,
-                                     CEfiHandle agent_handle,
-                                     CEfiHandle controller_handle,
-                                     CEfiU32 attributes);
-        CEfiStatus (*close_protocol) (CEfiHandle handle,
-                                      CEfiGuid *protocol,
-                                      CEfiHandle agent_handle,
-                                      CEfiHandle controller_handle);
-        CEfiStatus (*open_protocol_information) (CEfiHandle handle,
-                                                 CEfiGuid *protocol,
-                                                 CEfiOpenProtocolInformationEntry **entry_buffer,
-                                                 CEfiUSize *entry_count);
+        CEfiStatus (CEFICALL *open_protocol) (
+                CEfiHandle handle,
+                CEfiGuid *protocol,
+                void **interface,
+                CEfiHandle agent_handle,
+                CEfiHandle controller_handle,
+                CEfiU32 attributes
+        );
+        CEfiStatus (CEFICALL *close_protocol) (
+                CEfiHandle handle,
+                CEfiGuid *protocol,
+                CEfiHandle agent_handle,
+                CEfiHandle controller_handle
+        );
+        CEfiStatus (CEFICALL *open_protocol_information) (
+                CEfiHandle handle,
+                CEfiGuid *protocol,
+                CEfiOpenProtocolInformationEntry **entry_buffer,
+                CEfiUSize *entry_count
+        );
 
-        CEfiStatus (*protocols_per_handle) (CEfiHandle handle,
-                                            CEfiGuid ***protocol_buffer,
-                                            CEfiUSize *protocol_buffer_count);
-        CEfiStatus (*locate_handle_buffer) (CEfiLocateSearchType search_type,
-                                            CEfiGuid *protocol,
-                                            void *search_key,
-                                            CEfiUSize *no_handles,
-                                            CEfiHandle **buffer);
-        CEfiStatus (*locate_protocol) (CEfiGuid *protocol,
-                                       void *registration,
-                                       void **interface);
-        CEfiStatus (*install_multiple_protocol_interfaces) (CEfiHandle *handle,
-                                                            ...);
-        CEfiStatus (*uninstall_multiple_protocol_interfaces) (CEfiHandle handle,
-                                                              ...);
+        CEfiStatus (CEFICALL *protocols_per_handle) (
+                CEfiHandle handle,
+                CEfiGuid ***protocol_buffer,
+                CEfiUSize *protocol_buffer_count
+        );
+        CEfiStatus (CEFICALL *locate_handle_buffer) (
+                CEfiLocateSearchType search_type,
+                CEfiGuid *protocol,
+                void *search_key,
+                CEfiUSize *no_handles,
+                CEfiHandle **buffer
+        );
+        CEfiStatus (CEFICALL *locate_protocol) (
+                CEfiGuid *protocol,
+                void *registration,
+                void **interface
+        );
+        CEfiStatus (CEFICALL *install_multiple_protocol_interfaces) (
+                CEfiHandle *handle,
+                ...
+        );
+        CEfiStatus (CEFICALL *uninstall_multiple_protocol_interfaces) (
+                CEfiHandle handle,
+                ...
+        );
 
-        CEfiStatus (*calculate_crc32) (void *data,
-                                       CEfiUSize data_size,
-                                       CEfiU32 *crc32);
+        CEfiStatus (CEFICALL *calculate_crc32) (
+                void *data,
+                CEfiUSize data_size,
+                CEfiU32 *crc32
+        );
 
-        void (*copy_mem) (void *destination,
-                          void *source,
-                          CEfiUSize length);
-        void (*set_mem) (void *buffer,
-                         CEfiUSize size,
-                         CEfiU8 value);
+        void (CEFICALL *copy_mem) (
+                void *destination,
+                void *source,
+                CEfiUSize length
+        );
+        void (CEFICALL *set_mem) (
+                void *buffer,
+                CEfiUSize size,
+                CEfiU8 value
+        );
 
         /* 2.0+ */
 
-        CEfiStatus (*create_event_ex) (CEfiU32 type,
-                                       CEfiTpl notify_tpl,
-                                       CEfiEventNotify notify_function,
-                                       void *notify_context,
-                                       CEfiGuid *event_group,
-                                       CEfiEvent *event);
+        CEfiStatus (CEFICALL *create_event_ex) (
+                CEfiU32 type,
+                CEfiTpl notify_tpl,
+                CEfiEventNotify notify_function,
+                void *notify_context,
+                CEfiGuid *event_group,
+                CEfiEvent *event
+        );
 } CEfiBootServices;
 
 #define C_EFI_SYSTEM_TABLE_SIGNATURE C_EFI_U64_C(0x5453595320494249) /* "IBI SYST" */

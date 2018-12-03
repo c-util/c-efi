@@ -53,4 +53,4 @@ INSTALL:
             $ meson test
             # ninja install
 
-        No custom configuration options are available.
+        For custom configuration options see meson_options.txt.

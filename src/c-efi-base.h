@@ -7,19 +7,11 @@
  * types and macros as declared in the UEFI specification, as well as de-facto
  * standard additions provided by the reference implementation by Intel.
  *
- * Since UEFI environments are significantly different from common operating
- * system environments, the base environment differs as well. It would be
- * technically possible to port common C Standard Libraries (e.g., glibc) to an
- * UEFI environment. However, this would undermine many of the characteristics
- * of the UEFI environment, and prevent usage of several features the UEFI
- * model brings. Therefore, this project provides an alternative to a standard
- * C library for UEFI, but it also serves as base for possibly implementing (or
- * porting) a standard C library for/to UEFI.
- *
- * Please be aware that as long as you do not employ a standard C library for
- * UEFI, you most likely are unable to link against common C libraries. Almost
- * all existing C libraries use the standard library in some way, and this will
- * make them incompatible with UEFI environments.
+ * This file does not depend on a standard library, but can be used as base to
+ * port a standard library to UEFI. Note, though, the ISO-C Standard Library is
+ * in many ways incompatible to the style of UEFI development. While it is
+ * technically possible to implement it, it would work against many of the UEFI
+ * characteristics.
  *
  * This header provides the base types and macros used throughout the project.
  * It provides basic fixed-size integers, a NULL-equivalent, booleans, standard
@@ -47,11 +39,13 @@
  *    hence this did not pop up as actual issue. Future extensions might change
  *    this, though.
  *
- *  * The C-language-calling-convention is used. If you configure your compiler
- *    correctly, you should be good to go. The UEFI Specification defines some
- *    additional common rules for all its APIs, though. You will most likely
- *    not see any of these mentioned in the individual API documentions,
- *    though.
+ *  * The Microsoft calling-convention is used. If you configure your compiler
+ *    correctly, you should be good to go. In all other cases, all UEFI
+ *    functions are annotated with the correct calling-convention. As long as
+ *    your compiler supports it, it will automatically pick the correct style.
+ *    The UEFI Specification defines some additional common rules for all its
+ *    APIs, though. You will most likely not see any of these mentioned in the
+ *    individual API documentions, though. Here is a short reminder:
  *
  *     - Pointers must reference physical-memory locations (no I/O mappings, no
  *       virtual addresses, etc.). Once ExitBootServices() was called, and the
@@ -67,11 +61,32 @@
  *  * Stack size is at least 128KiB and 16-byte aligned. All stack space might
  *    be marked non-executable! Once ExitBootServices() was called, you must
  *    guarantee at least 4KiB of stack space, 16-byte aligned for all runtime
- *    services you call.
+ *    services you call. These numbers differ depending on the target
+ *    architecture, but should be roughly the same.
  */
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+/**
+ * CEFICALL: Annotate Functions with UEFI Calling-Convention
+ *
+ * This macro annotates function declarations with the correct calling
+ * convention. The UEFI Specification defines the calling-convention for each
+ * architecture it supports in great detail. It is almost identical to the
+ * calling-convention used on Microsoft Windows.
+ */
+#if defined(__arm__) || defined(_M_ARM)
+#  define CEFICALL __attribute__((pcs("aapcs")))
+#elif defined(__aarch64__) || defined(_M_ARM64)
+#  define CEFICALL /* XXX: No ABI-specifier supported so far */
+#elif defined(__i386__) || defined(_M_IX86)
+#  define CEFICALL __attribute__((cdecl))
+#elif defined(__x86_64__) || defined(_M_X64)
+#  define CEFICALL __attribute__((ms_abi))
+#else
+#  define CEFICALL /* Use native ABI; assume it matches the host. */
 #endif
 
 /*
@@ -309,7 +324,7 @@ typedef CEfiU64 CEfiVirtualAddress;
  * applications are unloaded when this function returns. Drivers might stay in
  * memory, depending on the return type. See the specification for details.
  */
-typedef CEfiStatus (*CEfiImageEntryPoint)(CEfiHandle image, CEfiSystemTable *st);
+typedef CEfiStatus (CEFICALL *CEfiImageEntryPoint)(CEfiHandle image, CEfiSystemTable *st);
 
 #ifdef __cplusplus
 }

@@ -21,10 +21,14 @@ typedef struct CEfiInputKey {
 } CEfiInputKey;
 
 typedef struct CEfiSimpleTextInputProtocol {
-        CEfiStatus (*reset) (CEfiSimpleTextInputProtocol *this_,
-                             CEfiBool extended_verification);
-        CEfiStatus (*read_key_stroke) (CEfiSimpleTextInputProtocol *this_,
-                                       CEfiInputKey *key);
+        CEfiStatus (CEFICALL *reset) (
+                CEfiSimpleTextInputProtocol *this_,
+                CEfiBool extended_verification
+        );
+        CEfiStatus (CEFICALL *read_key_stroke) (
+                CEfiSimpleTextInputProtocol *this_,
+                CEfiInputKey *key
+        );
         CEfiEvent wait_for_key;
 } CEfiSimpleTextInputProtocol;
 
