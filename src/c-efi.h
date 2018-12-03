@@ -23,6 +23,9 @@ extern "C" {
 #include <c-efi-protocol-device-path-utility.h>
 #include <c-efi-protocol-loaded-image.h>
 #include <c-efi-protocol-loaded-image-device-path.h>
+#include <c-efi-protocol-simple-text-input.h>
+#include <c-efi-protocol-simple-text-input-ex.h>
+#include <c-efi-protocol-simple-text-output.h>
 
 #ifdef __cplusplus
 }
