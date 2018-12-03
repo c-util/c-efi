@@ -278,7 +278,7 @@ typedef struct CEfiIpAddress {
 
 /**
  * CEfiStatus, CEfiHandle, CEfiEvent, CEfiLba, CEfiTpl, CEfiPhysicalAddress,
- * CEfiLogicalAddress, CEfiVirtualAddress: Common UEFI Aliases
+ * CEfiVirtualAddress: Common UEFI Aliases
  *
  * These types are all aliases as defined by the UEFI specification. They are
  * solely meant for documentational purposes.
@@ -287,8 +287,7 @@ typedef struct CEfiIpAddress {
  * represents handles to allocated objects. CEfiEvent represents slots that
  * can be waited on (like Windows events). CEfiLba represents logical block
  * addresses. CEfiTpl represents thread priority levels. CEfiPhysicalAddress,
- * CEfiLogicalAddress, and CEfiVirtualAddress are used to denote physical,
- * logical, and virtual addresses.
+ * and CEfiVirtualAddress are used to denote physical, and virtual addresses.
  */
 typedef CEfiUSize CEfiStatus;
 typedef void *CEfiHandle;
@@ -296,7 +295,6 @@ typedef void *CEfiEvent;
 typedef CEfiU64 CEfiLba;
 typedef CEfiUSize CEfiTpl;
 typedef CEfiU64 CEfiPhysicalAddress;
-typedef CEfiU64 CEfiLogicalAddress;
 typedef CEfiU64 CEfiVirtualAddress;
 
 /**
