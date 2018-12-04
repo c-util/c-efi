@@ -13,11 +13,11 @@ CEfiStatus efi_main(CEfiHandle h, CEfiSystemTable *st) {
         CEfiUSize x;
 
         r = st->con_out->output_string(st->con_out, L"Hello World!\n");
-        if (r < 0)
+        if (C_EFI_ERROR(r))
                 return r;
 
         r = st->boot_services->wait_for_event(1, &st->con_in->wait_for_key, &x);
-        if (r < 0)
+        if (C_EFI_ERROR(r))
                 return r;
 
         return 0;
