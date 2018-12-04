@@ -56,6 +56,26 @@ static void test_basic(void) {
         }
 
         /*
+         * Verify some status codes with constants taken directly from the
+         * spec. Note that CEfiStatus depends on CEfiUSize, as such matches the
+         * target architecture word width.
+         */
+        {
+                assert(!C_EFI_SUCCESS);
+                assert(sizeof(C_EFI_SUCCESS) == sizeof(CEfiStatus));
+                assert(!C_EFI_ERROR(C_EFI_SUCCESS));
+                assert(C_EFI_ERROR(C_EFI_UNSUPPORTED));
+
+                if (sizeof(CEfiStatus) == sizeof(uint32_t)) {
+                        assert((uint32_t)C_EFI_UNSUPPORTED == (uint32_t)0x80000003UL);
+                } else if (sizeof(CEfiStatus) == sizeof(uint64_t)) {
+                        assert((uint64_t)C_EFI_UNSUPPORTED == (uint64_t)0x8000000000000003UL);
+                } else {
+                        assert(0);
+                }
+        }
+
+        /*
          * Verify alignment and size of GUID is correct. The type itself is
          * required to be 64bit aligned, 128bit in size.
          */

@@ -226,6 +226,83 @@ typedef CEfiU8 CEfiChar8;
 typedef CEfiU16 CEfiChar16;
 
 /**
+ * CEfiStatus: Status Codes
+ *
+ * The CEfiStatus type is used to indicate the return status of functions,
+ * operations, and internal state. A value of 0 indicates success. Positive
+ * values (MSB unset) indicate warnings, negative values (MSB set) indicate
+ * errors. The second-MSB distinguishes OEM warnings and errors.
+ */
+
+typedef CEfiUSize CEfiStatus;
+
+#if __UINTPTR_MAX__ == __UINT32_MAX__
+#  define C_EFI_STATUS_C                 C_EFI_U32_C
+#  define C_EFI_STATUS_WIDTH             32
+#elif __UINTPTR_MAX__ == __UINT64_MAX__
+#  define C_EFI_STATUS_C                 C_EFI_U64_C
+#  define C_EFI_STATUS_WIDTH             64
+#else
+#  error "Unsupported value of __UINTPTR_MAX__"
+#endif
+
+#define C_EFI_STATUS_ERROR_MASK         (C_EFI_STATUS_C(0x80) << (C_EFI_STATUS_WIDTH - 8))
+#define C_EFI_STATUS_ERROR_OEM_MASK     (C_EFI_STATUS_C(0xc0) << (C_EFI_STATUS_WIDTH - 8))
+#define C_EFI_STATUS_WARNING_MASK       (C_EFI_STATUS_C(0x00) << (C_EFI_STATUS_WIDTH - 8))
+#define C_EFI_STATUS_WARNING_OEM_MASK   (C_EFI_STATUS_C(0x40) << (C_EFI_STATUS_WIDTH - 8))
+
+#define C_EFI_STATUS_ERROR_C(_x)        (C_EFI_STATUS_C(_x) | C_EFI_STATUS_ERROR_MASK)
+#define C_EFI_STATUS_ERROR_OEM_C(_x)    (C_EFI_STATUS_C(_x) | C_EFI_STATUS_ERROR_OEM_MASK)
+#define C_EFI_STATUS_WARNING_C(_x)      (C_EFI_STATUS_C(_x) | C_EFI_STATUS_WARNING_MASK)
+#define C_EFI_STATUS_WARNING_OEM_C(_x)  (C_EFI_STATUS_C(_x) | C_EFI_STATUS_WARNING_OEM_MASK)
+
+#define C_EFI_ERROR(_x)                 (!!((_x) & C_EFI_STATUS_ERROR_MASK))
+
+#define C_EFI_SUCCESS                   C_EFI_STATUS_C(0)
+
+#define C_EFI_LOAD_ERROR                C_EFI_STATUS_ERROR_C(1)
+#define C_EFI_INVALID_PARAMETER         C_EFI_STATUS_ERROR_C(2)
+#define C_EFI_UNSUPPORTED               C_EFI_STATUS_ERROR_C(3)
+#define C_EFI_BAD_BUFFER_SIZE           C_EFI_STATUS_ERROR_C(4)
+#define C_EFI_BUFFER_TOO_SMALL          C_EFI_STATUS_ERROR_C(5)
+#define C_EFI_NOT_READY                 C_EFI_STATUS_ERROR_C(6)
+#define C_EFI_DEVICE_ERROR              C_EFI_STATUS_ERROR_C(7)
+#define C_EFI_WRITE_PROTECTED           C_EFI_STATUS_ERROR_C(8)
+#define C_EFI_OUT_OF_RESOURCES          C_EFI_STATUS_ERROR_C(9)
+#define C_EFI_VOLUME_CORRUPTED          C_EFI_STATUS_ERROR_C(10)
+#define C_EFI_VOLUME_FULL               C_EFI_STATUS_ERROR_C(11)
+#define C_EFI_NO_MEDIA                  C_EFI_STATUS_ERROR_C(12)
+#define C_EFI_MEDIA_CHANGED             C_EFI_STATUS_ERROR_C(13)
+#define C_EFI_NOT_FOUND                 C_EFI_STATUS_ERROR_C(14)
+#define C_EFI_ACCESS_DENIED             C_EFI_STATUS_ERROR_C(15)
+#define C_EFI_NO_RESPONSE               C_EFI_STATUS_ERROR_C(16)
+#define C_EFI_NO_MAPPING                C_EFI_STATUS_ERROR_C(17)
+#define C_EFI_TIMEOUT                   C_EFI_STATUS_ERROR_C(18)
+#define C_EFI_NOT_STARTED               C_EFI_STATUS_ERROR_C(19)
+#define C_EFI_ALREADY_STARTED           C_EFI_STATUS_ERROR_C(20)
+#define C_EFI_ABORTED                   C_EFI_STATUS_ERROR_C(21)
+#define C_EFI_ICMP_ERROR                C_EFI_STATUS_ERROR_C(22)
+#define C_EFI_TFTP_ERROR                C_EFI_STATUS_ERROR_C(23)
+#define C_EFI_PROTOCOL_ERROR            C_EFI_STATUS_ERROR_C(24)
+#define C_EFI_INCOMPATIBLE_VERSION      C_EFI_STATUS_ERROR_C(25)
+#define C_EFI_SECURITY_VIOLATION        C_EFI_STATUS_ERROR_C(26)
+#define C_EFI_CRC_ERROR                 C_EFI_STATUS_ERROR_C(27)
+#define C_EFI_END_OF_MEDIA              C_EFI_STATUS_ERROR_C(28)
+#define C_EFI_END_OF_FILE               C_EFI_STATUS_ERROR_C(31)
+#define C_EFI_INVALID_LANGUAGE          C_EFI_STATUS_ERROR_C(32)
+#define C_EFI_COMPROMISED_DATA          C_EFI_STATUS_ERROR_C(33)
+#define C_EFI_IP_ADDRESS_CONFLICT       C_EFI_STATUS_ERROR_C(34)
+#define C_EFI_HTTP_ERROR                C_EFI_STATUS_ERROR_C(35)
+
+#define C_EFI_WARN_UNKNOWN_GLYPH        C_EFI_STATUS_WARNING_C(1)
+#define C_EFI_WARN_DELETE_FAILURE       C_EFI_STATUS_WARNING_C(2)
+#define C_EFI_WARN_WRITE_FAILURE        C_EFI_STATUS_WARNING_C(3)
+#define C_EFI_WARN_BUFFER_TOO_SMALL     C_EFI_STATUS_WARNING_C(4)
+#define C_EFI_WARN_STALE_DATA           C_EFI_STATUS_WARNING_C(5)
+#define C_EFI_WARN_FILE_SYSTEM          C_EFI_STATUS_WARNING_C(6)
+#define C_EFI_WARN_RESET_REQUIRED       C_EFI_STATUS_WARNING_C(7)
+
+/**
  * CEfiGuid: Globally Unique Identifier Type
  *
  * The CEfiGuid type represents a GUID. It is always 128bit in size and
@@ -292,19 +369,18 @@ typedef struct CEfiIpAddress {
 } CEfiIpAddress;
 
 /**
- * CEfiStatus, CEfiHandle, CEfiEvent, CEfiLba, CEfiTpl, CEfiPhysicalAddress,
+ * CEfiHandle, CEfiEvent, CEfiLba, CEfiTpl, CEfiPhysicalAddress,
  * CEfiVirtualAddress: Common UEFI Aliases
  *
  * These types are all aliases as defined by the UEFI specification. They are
  * solely meant for documentational purposes.
  *
- * CEfiStatus is used for status returns of function calls. CEfiHandle
- * represents handles to allocated objects. CEfiEvent represents slots that
- * can be waited on (like Windows events). CEfiLba represents logical block
- * addresses. CEfiTpl represents thread priority levels. CEfiPhysicalAddress,
- * and CEfiVirtualAddress are used to denote physical, and virtual addresses.
+ * CEfiHandle represents handles to allocated objects. CEfiEvent represents
+ * slots that can be waited on (like Windows events). CEfiLba represents
+ * logical block addresses. CEfiTpl represents thread priority levels.
+ * CEfiPhysicalAddress, and CEfiVirtualAddress are used to denote physical,
+ * and virtual addresses.
  */
-typedef CEfiUSize CEfiStatus;
 typedef void *CEfiHandle;
 typedef void *CEfiEvent;
 typedef CEfiU64 CEfiLba;
