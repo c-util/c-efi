@@ -303,6 +303,40 @@ typedef CEfiUSize CEfiStatus;
 #define C_EFI_WARN_RESET_REQUIRED       C_EFI_STATUS_WARNING_C(7)
 
 /**
+ * CEfiHandle, CEfiEvent, CEfiLba, CEfiTpl, CEfiPhysicalAddress,
+ * CEfiVirtualAddress: Common UEFI Aliases
+ *
+ * These types are all aliases as defined by the UEFI specification. They are
+ * solely meant for documentational purposes.
+ *
+ * CEfiHandle represents handles to allocated objects. CEfiEvent represents
+ * slots that can be waited on (like Windows events). CEfiLba represents
+ * logical block addresses. CEfiTpl represents thread priority levels.
+ * CEfiPhysicalAddress, and CEfiVirtualAddress are used to denote physical,
+ * and virtual addresses.
+ */
+typedef void *CEfiHandle;
+typedef void *CEfiEvent;
+typedef CEfiU64 CEfiLba;
+typedef CEfiUSize CEfiTpl;
+typedef CEfiU64 CEfiPhysicalAddress;
+typedef CEfiU64 CEfiVirtualAddress;
+
+/**
+ * CEfiImageEntryPoint: Type of image entry points
+ *
+ * All loaded images must have an entry point of this type. The entry point is
+ * pointed to in the PE/COFF header. No particular symbol-name is required,
+ * though most setups automatically pick the function named `efi_main`.
+ *
+ * On load, the entry-point is called with a pointer to the own image as first
+ * argument, a pointer to the global system table as second argument. Normal
+ * applications are unloaded when this function returns. Drivers might stay in
+ * memory, depending on the return type. See the specification for details.
+ */
+typedef CEfiStatus (CEFICALL *CEfiImageEntryPoint)(CEfiHandle image, CEfiSystemTable *st);
+
+/**
  * CEfiGuid: Globally Unique Identifier Type
  *
  * The CEfiGuid type represents a GUID. It is always 128bit in size and
@@ -367,40 +401,6 @@ typedef struct CEfiIpAddress {
                 _Alignas(4) CEfiIpv6Address ipv6;
         };
 } CEfiIpAddress;
-
-/**
- * CEfiHandle, CEfiEvent, CEfiLba, CEfiTpl, CEfiPhysicalAddress,
- * CEfiVirtualAddress: Common UEFI Aliases
- *
- * These types are all aliases as defined by the UEFI specification. They are
- * solely meant for documentational purposes.
- *
- * CEfiHandle represents handles to allocated objects. CEfiEvent represents
- * slots that can be waited on (like Windows events). CEfiLba represents
- * logical block addresses. CEfiTpl represents thread priority levels.
- * CEfiPhysicalAddress, and CEfiVirtualAddress are used to denote physical,
- * and virtual addresses.
- */
-typedef void *CEfiHandle;
-typedef void *CEfiEvent;
-typedef CEfiU64 CEfiLba;
-typedef CEfiUSize CEfiTpl;
-typedef CEfiU64 CEfiPhysicalAddress;
-typedef CEfiU64 CEfiVirtualAddress;
-
-/**
- * CEfiImageEntryPoint: Type of image entry points
- *
- * All loaded images must have an entry point of this type. The entry point is
- * pointed to in the PE/COFF header. No particular symbol-name is required,
- * though most setups automatically pick the function named `efi_main`.
- *
- * On load, the entry-point is called with a pointer to the own image as first
- * argument, a pointer to the global system table as second argument. Normal
- * applications are unloaded when this function returns. Drivers might stay in
- * memory, depending on the return type. See the specification for details.
- */
-typedef CEfiStatus (CEFICALL *CEfiImageEntryPoint)(CEfiHandle image, CEfiSystemTable *st);
 
 #ifdef __cplusplus
 }
